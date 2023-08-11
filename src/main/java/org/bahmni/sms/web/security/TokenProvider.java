@@ -18,16 +18,4 @@ public class TokenProvider {
                 .setExpiration(null)
                 .compact();
     }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }

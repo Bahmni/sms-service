@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bahmni.sms.SMSSender;
+import org.bahmni.sms.TokenStorage;
 import org.bahmni.sms.model.SMSContract;
 import org.bahmni.sms.web.security.OpenMRSAuthenticator;
 import org.bahmni.sms.web.security.TokenProvider;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/notification/sms")
@@ -25,7 +27,7 @@ public class SMSController {
     @PostConstruct
     public void initialize() {
         String token = tokenProvider.generateToken();
-        logger.info("Please note the genrated token: "+token);
+        TokenStorage.writeToken(token);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -34,7 +36,7 @@ public class SMSController {
         boolean isValidToken = false;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            isValidToken = tokenProvider.validateToken(token);
+            isValidToken = Objects.equals(TokenStorage.readToken(), token);
         }
 
         if (isValidToken) {
