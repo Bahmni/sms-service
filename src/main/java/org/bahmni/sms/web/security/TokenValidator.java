@@ -16,10 +16,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 @Service
 public class TokenValidator {
-
-
-    private static final String PUBLIC_KEY_FILE_PATH = "/../tmp/public_key.pem";
-
+    private static final String PUBLIC_KEY_FILE_PATH = "/../tmp/public_key.crt";
 
     private static Key loadPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         String publicKeyString = Files.readString(Paths.get(PUBLIC_KEY_FILE_PATH));
@@ -47,7 +44,7 @@ public class TokenValidator {
                     .parseClaimsJws(token)
                     .getBody();
 
-            return ((String) claims.get("user")).equals("bahmni");
+            return ((String) claims.get("user")).equals("Communications");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
