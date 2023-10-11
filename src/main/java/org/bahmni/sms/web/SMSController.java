@@ -7,6 +7,7 @@ import org.bahmni.sms.SMSSender;
 import org.bahmni.sms.impl.DefaultSmsSender;
 import org.bahmni.sms.model.SMSContract;
 import org.bahmni.sms.web.security.TokenValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/notification/sms")
 @AllArgsConstructor
 public class SMSController {
+
+    @Autowired
+    TokenValidator tokenValidator;
+
     private final SMSSender smsSender;
     private static final Logger logger = LogManager.getLogger(DefaultSmsSender.class);
 
@@ -25,7 +30,7 @@ public class SMSController {
         boolean isValidToken = false;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            isValidToken = TokenValidator.validateToken(token);
+            isValidToken = tokenValidator.validateToken(token);
         }
 
         if (isValidToken) {

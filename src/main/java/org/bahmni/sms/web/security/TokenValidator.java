@@ -36,7 +36,7 @@ public class TokenValidator {
 
 
 
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Key publicKey = loadPublicKey();
 

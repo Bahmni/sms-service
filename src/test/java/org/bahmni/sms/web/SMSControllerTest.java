@@ -6,6 +6,7 @@ import org.apache.http.impl.DefaultHttpResponseFactory;
 import org.apache.http.message.BasicStatusLine;
 import org.bahmni.sms.SMSSender;
 import org.bahmni.sms.web.security.OpenMRSAuthenticator;
+import org.bahmni.sms.web.security.TokenValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -35,6 +36,9 @@ class SMSControllerTest {
     @MockBean
     private OpenMRSAuthenticator authenticator;
 
+    @MockBean
+    private TokenValidator tokenValidator;
+
 
     @Test
     public void shouldAcceptTheSMSRequest() {
@@ -42,12 +46,12 @@ class SMSControllerTest {
                 "\"phoneNumber\":\"+919999999999\"," +
                 "\"message\":\"hello\"" +
                 "}";
-        when(authenticator.authenticate("dummy")).thenReturn(new ResponseEntity<>("Authentication Success", HttpStatus.OK));
+        when(tokenValidator.validateToken("dummy")).thenReturn(Boolean.valueOf("true"));
         webClient.post()
                 .uri("/notification/sms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
-                .cookie("reporting_session", "dummy")
+                .header("Authorization","Bearer dummy")
                 .exchange()
                 .expectStatus()
                 .is2xxSuccessful();
@@ -59,12 +63,12 @@ class SMSControllerTest {
                 "'phoneNumber':'+919999999999'," +
                 "'message':'hello'" +
                 "}";
-        when(authenticator.authenticate("dummy")).thenReturn(new ResponseEntity<>("Authentication Success", HttpStatus.OK));
+        when(tokenValidator.validateToken("dummy")).thenReturn(Boolean.valueOf("true"));
         webClient.post()
                 .uri("/notification/sms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
-                .cookie("reporting_session", "dummy")
+                .header("Authorization","Bearer dummy")
                 .exchange()
                 .expectStatus()
                 .isBadRequest();
@@ -76,12 +80,12 @@ class SMSControllerTest {
                 "\"message\":\"hello\"," +
                 "\"phoneNumber\":\"919999999999\"" +
                 "}";
-        when(authenticator.authenticate("dummy")).thenReturn(new ResponseEntity<>("Authentication Success", HttpStatus.OK));
+        when(tokenValidator.validateToken("dummy")).thenReturn(Boolean.valueOf("true"));
         webClient.post()
                 .uri("/notification/sms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
-                .cookie("reporting_session", "dummy")
+                .header("Authorization","Bearer dummy")
                 .exchange();
 
         Mockito.verify(smsSender, times(1)).send("919999999999", "hello");
@@ -93,14 +97,14 @@ class SMSControllerTest {
                 "\"message\":\"hello\"," +
                 "\"phoneNumber\":\"919999999999\"" +
                 "}";
-        when(authenticator.authenticate("dummy")).thenReturn(new ResponseEntity<>("Authentication Failure", HttpStatus.UNAUTHORIZED));
+        when(tokenValidator.validateToken("dummy")).thenReturn(Boolean.valueOf("false"));
         webClient.post()
                 .uri("/notification/sms")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestBody)
-                .cookie("reporting_session", "dummy")
+                .header("Authorization","Bearer dummy")
                 .exchange()
                 .expectStatus()
-                .is4xxClientError();
+                .isForbidden();
     }
 }
