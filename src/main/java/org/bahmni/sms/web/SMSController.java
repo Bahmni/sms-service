@@ -20,22 +20,22 @@ public class SMSController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity sendSMS(@RequestBody SMSContract smsContract, @CookieValue(value = "reporting_session", required = false) String cookie, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) throws Exception {
+    public ResponseEntity sendSMS(@RequestBody SMSContract smsContract) throws Exception {
         boolean isValidToken = false;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            isValidToken = TokenValidator.validateToken(token);
-        }
-
-        if (isValidToken) {
-            return smsSender.send(smsContract.getPhoneNumber(), smsContract.getMessage());
-        } else {
-            ResponseEntity authenticationResponse = authenticator.authenticate(cookie);
-            if (authenticationResponse.getStatusCode().is2xxSuccessful()) {
+//        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+//            String token = authorizationHeader.substring(7);
+//            isValidToken = TokenValidator.validateToken(token);
+//        }
+//
+//        if (isValidToken) {
+//            return smsSender.send(smsContract.getPhoneNumber(), smsContract.getMessage());
+//        } else {
+//            ResponseEntity authenticationResponse = authenticator.authenticate(cookie);
+//            if (authenticationResponse.getStatusCode().is2xxSuccessful()) {
                 return smsSender.send(smsContract.getPhoneNumber(), smsContract.getMessage());
-            } else {
-                return authenticationResponse;
-            }
-        }
+//            } else {
+//                return authenticationResponse;
+//            }
+//        }
     }
 }
