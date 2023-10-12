@@ -46,7 +46,7 @@ public class TokenValidator {
                     .parseClaimsJws(token)
                     .getBody();
 
-            return ((String) claims.get("user")).equals("bahmni");
+            return ((String) claims.get("user")).equals("bahmni-emr");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
