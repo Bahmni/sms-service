@@ -17,7 +17,7 @@ import java.util.Base64;
 public class TokenValidator {
 
 
-    private static final String PUBLIC_KEY_FILE_PATH = "/../opt/public_key.pem";
+    private static final String PUBLIC_KEY_FILE_PATH = "/../opt/public_key.crt";
 
 
     private static Key loadPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
