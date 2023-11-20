@@ -27,17 +27,6 @@ public class SMSController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity sendSMS(@RequestBody SMSContract smsContract, @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader) throws Exception {
-        boolean isValidToken = false;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
-            isValidToken = tokenValidator.validateToken(token);
-        }
-
-        if (isValidToken) {
-            return smsSender.send(smsContract.getPhoneNumber(), smsContract.getMessage());
-        } else {
-            logger.error("Sms service could not authenticate with openmrs");
-            return new ResponseEntity<>("Authentication Failure", HttpStatus.FORBIDDEN);
-        }
+        return smsSender.send(smsContract.getPhoneNumber(), smsContract.getMessage());
     }
 }
