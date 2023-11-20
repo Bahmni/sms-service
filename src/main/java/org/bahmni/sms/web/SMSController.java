@@ -18,11 +18,8 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class SMSController {
 
-    @Autowired
-    TokenValidator tokenValidator;
 
     private final SMSSender smsSender;
-    private static final Logger logger = LogManager.getLogger(DefaultSmsSender.class);
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
