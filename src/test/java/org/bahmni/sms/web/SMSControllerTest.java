@@ -105,6 +105,6 @@ class SMSControllerTest {
                 .header("Authorization","Bearer dummy")
                 .exchange()
                 .expectStatus()
-                .isForbidden();
+                .isUnauthorized();
     }
 }
