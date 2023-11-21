@@ -1,7 +1,6 @@
 package org.bahmni.sms.web.security;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,10 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 @Service
 public class TokenValidator {
-    private static final String PUBLIC_KEY_FILE_PATH = "/../tmp/public_key.crt";
+
+
+    private static final String PUBLIC_KEY_FILE_PATH = "/../opt/public_key.crt";
+
 
     private static Key loadPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         String publicKeyString = Files.readString(Paths.get(PUBLIC_KEY_FILE_PATH));
@@ -34,7 +36,7 @@ public class TokenValidator {
 
 
 
-    public static boolean validateToken(String token) {
+    public boolean validateToken(String token) {
         try {
             Key publicKey = loadPublicKey();
 
@@ -44,7 +46,7 @@ public class TokenValidator {
                     .parseClaimsJws(token)
                     .getBody();
 
-            return ((String) claims.get("user")).equals("Communications");
+            return ((String) claims.get("user")).equals("bahmni-emr");
         } catch (Exception e) {
             e.printStackTrace();
             return false;
