@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 
-import static org.bahmni.sms.Constants.SEND;
 
 @Repository
 public class DefaultSmsSender implements SMSSender {
@@ -35,7 +34,7 @@ public class DefaultSmsSender implements SMSSender {
         logger.info("Sending SMS for ********" + phoneNumber.substring(phoneNumber.length() - 2));
         try {
             HttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost request = new HttpPost(SEND);
+            HttpPost request = new HttpPost(smsProperties.getProviderApi());
             Message message = new Message();
             message.setChannel("sms");
             message.setMsg_type("text");
@@ -52,6 +51,9 @@ public class DefaultSmsSender implements SMSSender {
             String jsonObject = Obj.writeValueAsString(smsRequest);
             StringEntity params = new StringEntity(jsonObject);
             request.addHeader("content-type", "application/json");
+            if(smsProperties.getToken().isEmpty()){
+                logger.warn("token doesn't exist in env");
+            }
             request.addHeader("Authorization", "Bearer " + smsProperties.getToken());
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);

@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 public class SMSProperties {
     private String originator;
     private String token;
+    private String providerApi;
     private String openmrsHost;
     private String openmrsPort;
     private String openmrsRootURL;
