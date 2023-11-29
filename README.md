@@ -47,3 +47,8 @@ docker run -d -p 8080:8080 sms
     ]
 }
 ```
+## Purpose of token generation
+```
+The purpose of the token generation script is to ensure that only authorized entities can send SMS messages and prevent any unauthorized intruders from spamming recipients with fake SMS. The script generates tokens that are subsequently verified within the SMS service.
+Verification involves checking if the token is signed with a valid key and if it contains the correct claims. If the verification process confirms these criteria, it signifies that the token is valid and originates from the Bahmni module.
+```
