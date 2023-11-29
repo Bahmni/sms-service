@@ -47,6 +47,7 @@ docker run -d -p 8080:8080 sms
     ]
 }
 ```
+## Api Documentation [here](https://editor.swagger.io/?url=https://raw.githubusercontent.com/Bahmni/sms-service/BAH-3330/src/main/resources/openapi.yaml)
 ## Purpose of token generation
 ```
 The purpose of the token generation script is to ensure that only authorized entities can send SMS messages and prevent any unauthorized intruders from spamming recipients with fake SMS. The script generates tokens that are subsequently verified within the SMS service.
