@@ -52,11 +52,15 @@ public class DefaultSmsSender implements SMSSender {
             StringEntity params = new StringEntity(jsonObject);
             request.addHeader("content-type", "application/json");
             if(smsProperties.getToken().isEmpty()){
-                logger.warn("token doesn't exist in env");
+                logger.warn("token doesn't exist in environment variable");
+                return new ResponseEntity<>("token doesn't exist in environment variable" , HttpStatus.INTERNAL_SERVER_ERROR);
             }
             request.addHeader("Authorization", "Bearer " + smsProperties.getToken());
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode()==HttpStatus.NOT_FOUND.value()){
+                logger.warn("Invalid API URL");
+            }
             return new ResponseEntity<>(response.getStatusLine().getReasonPhrase(), HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
         } catch (Exception e) {
             logger.warn("Error in sending sms", e);
