@@ -17,6 +17,7 @@ public class SMSProperties {
     private String openmrsHost;
     private String openmrsPort;
     private String openmrsRootURL;
+    private String countryCode;
 
     public String getOpenmrsRootURL() {
         return "http://" + openmrsHost + ":" + openmrsPort + "/openmrs/ws/rest/v1";
