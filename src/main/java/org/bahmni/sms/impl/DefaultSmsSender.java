@@ -18,7 +18,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 
-import static org.bahmni.sms.Constants.SEND;
 
 @Repository
 public class DefaultSmsSender implements SMSSender {
@@ -35,12 +34,17 @@ public class DefaultSmsSender implements SMSSender {
         logger.info("Sending SMS for ********" + phoneNumber.substring(phoneNumber.length() - 2));
         try {
             HttpClient httpClient = HttpClientBuilder.create().build();
-            HttpPost request = new HttpPost(SEND);
+            HttpPost request = new HttpPost(smsProperties.getProviderApi());
             Message message = new Message();
             message.setChannel("sms");
             message.setMsg_type("text");
+
+            if ((phoneNumber.length()==10 || phoneNumber.length()==11) && !phoneNumber.startsWith("+")) {
+                phoneNumber = smsProperties.getCountryCode() + phoneNumber;
+            }
+            String finalPhoneNumber = phoneNumber;
             message.setRecipients(new ArrayList<String>() {{
-                add(phoneNumber);
+                add(finalPhoneNumber);
             }});
             message.setOriginator(smsProperties.getOriginator());
             message.setContent(messageText);
@@ -52,9 +56,18 @@ public class DefaultSmsSender implements SMSSender {
             String jsonObject = Obj.writeValueAsString(smsRequest);
             StringEntity params = new StringEntity(jsonObject);
             request.addHeader("content-type", "application/json");
+            if(smsProperties.getToken().isEmpty()){
+                logger.warn("token doesn't exist in environment variable");
+                return new ResponseEntity<>("token doesn't exist in environment variable" , HttpStatus.INTERNAL_SERVER_ERROR);
+            }
             request.addHeader("Authorization", "Bearer " + smsProperties.getToken());
             request.setEntity(params);
             HttpResponse response = httpClient.execute(request);
+            if(response.getStatusLine().getStatusCode()==HttpStatus.NOT_FOUND.value()){
+                logger.warn("Invalid API URL");
+                return new ResponseEntity<>(response.getStatusLine().getReasonPhrase(), HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
+            }
+            logger.info(response.getStatusLine().getReasonPhrase());
             return new ResponseEntity<>(response.getStatusLine().getReasonPhrase(), HttpStatus.valueOf(response.getStatusLine().getStatusCode()));
         } catch (Exception e) {
             logger.warn("Error in sending sms", e);
