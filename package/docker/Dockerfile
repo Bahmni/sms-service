@@ -1,4 +1,4 @@
-FROM amazoncorretto:11.0.18
+FROM amazoncorretto:17
 RUN yum install openssl -y
 COPY package/docker/generate_token.sh /home/
 COPY package/docker/sms-startup.sh /
