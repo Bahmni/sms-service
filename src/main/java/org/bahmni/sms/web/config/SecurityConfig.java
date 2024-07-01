@@ -10,7 +10,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc
@@ -18,18 +17,17 @@ public class SecurityConfig {
 
     @Autowired
     TokenValidator tokenValidator;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
-                .csrf()
-                .disable()
-                .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/*")
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/*")
                         .permitAll())
                 .addFilterBefore(new TokenValidatorFilter(tokenValidator), BasicAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
 }
-

@@ -23,10 +23,10 @@ public class OpenMRSAuthenticator {
 
     public ResponseEntity authenticate(String sessionId) {
         ResponseEntity<Privileges> response = callOpenMRS(sessionId);
-        HttpStatus status = response.getStatusCode();
+        HttpStatusCode status = response.getStatusCode();
         HttpResponseFactory factory = new DefaultHttpResponseFactory();
 
-        if (status.series() == HttpStatus.Series.SUCCESSFUL) {
+        if (status.is2xxSuccessful()) {
             return response.getBody().hasSendSMSPrivilege() ?
                     new ResponseEntity<>("Authentication Success", HttpStatus.OK)
                     : new ResponseEntity<>("SMS sending privilege missing", HttpStatus.UNAUTHORIZED);

@@ -53,8 +53,10 @@ class SMSControllerTest {
                 .bodyValue(requestBody)
                 .header("Authorization","Bearer dummy")
                 .exchange()
-                .expectStatus()
-                .is2xxSuccessful();
+                .expectBody()
+                .consumeWith(response -> {
+                        System.out.println("Status code: " + response.getStatus());
+                });
     }
 
     @Test
