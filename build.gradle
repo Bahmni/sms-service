@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.bahmni.sms'
-version = '1.1.0'
+version = '1.2.0-SNAPSHOT'
 sourceCompatibility = '11.0.18'
 
 configurations {
