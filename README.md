@@ -2,9 +2,22 @@
 
 This repository provides functionality for sending SMS, using D7 Networks as the default SMS provider. However, it is designed with flexibility, allowing users to override the default implementation and integrate their own SMS sending functionality if needed.
 
+## Requirements
+
+- **Java 17+** (LTS recommended)
+- **Gradle 8.0+** (included via Gradle Wrapper)
+
 ## Running from Source
 
 To run the service from the source code, follow the steps below:
+
+### Prerequisites
+
+Ensure you have Java 17 or higher installed:
+```shell
+java -version
+# Should output: java version "17" or higher
+```
 
 ### Test / Build
 
@@ -47,6 +60,10 @@ docker run -d -p 8080:8080 bahmni/sms-service
 ```
 
 This will run the container in detached mode, mapping port `8080` on your machine to port `8080` on the container.
+
+### Java Runtime Version
+
+The Docker image uses **Amazon Corretto 17** as the base. This image requires Java 17 or higher at runtime. Deployment environments must support Java 17+.
 
 The bahmni/sms-service image runs the Bahmni SMS service, and the image is built and published via GitHub Actions from the sms-service repository. Below are the key environment configurations used to run the service.
 
@@ -103,3 +120,13 @@ The token is verified within the SMS service by checking:
 When both of these criteria are met, the token is considered valid and trusted, originating from the Bahmni module.
 
 This ensures that only authenticated and authorized users are able to send SMS messages, protecting the service from misuse or spamming attempts.
+
+## Breaking Changes
+
+**Important**: SMS Service requires **Java 17+** (Java 21 LTS also supported). Ensure your deployment environment supports Java 17 or higher before upgrading.
+
+All other configurations remain unchanged:
+- No API changes to `/notification/sms` endpoint
+- No configuration file changes needed
+- No database schema migrations required
+- Token validation logic unchanged

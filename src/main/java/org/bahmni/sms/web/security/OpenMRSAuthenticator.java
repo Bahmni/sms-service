@@ -23,7 +23,7 @@ public class OpenMRSAuthenticator {
 
     public ResponseEntity authenticate(String sessionId) {
         ResponseEntity<Privileges> response = callOpenMRS(sessionId);
-        HttpStatus status = response.getStatusCode();
+        HttpStatus status = HttpStatus.valueOf(response.getStatusCode().value());
         HttpResponseFactory factory = new DefaultHttpResponseFactory();
 
         if (status.series() == HttpStatus.Series.SUCCESSFUL) {
