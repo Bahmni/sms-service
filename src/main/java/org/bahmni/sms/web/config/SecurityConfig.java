@@ -22,10 +22,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity
-                .csrf()
-                .disable()
+                .csrf((csrf) -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> authorize
-                        .antMatchers("/*")
+                        .requestMatchers("/**")
                         .permitAll())
                 .addFilterBefore(new TokenValidatorFilter(tokenValidator), BasicAuthenticationFilter.class);
 
